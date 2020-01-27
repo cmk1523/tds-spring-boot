@@ -97,7 +97,7 @@ public class UserController extends BaseController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "", method = RequestMethod.PUT)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     public Object put(HttpServletRequest request, @RequestBody User data) {
         try {
             User newItem = null; // this.userService.create(data);
@@ -109,10 +109,10 @@ public class UserController extends BaseController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public Object update(HttpServletRequest request, @PathVariable Integer id, @RequestBody User data) {
         try {
-            User updatedItem = null; // this.userService.update(data);
+            User updatedItem = null; // this.userService.createupdate(data);
 
             if (updatedItem != null) {
                 return new Response(updatedItem, this.getTimeTook(request));

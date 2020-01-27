@@ -4,6 +4,7 @@ import com.techdevsolutions.springBoot.security.authorities.AdminAuthority;
 import com.techdevsolutions.springBoot.security.authorities.ApiAuthority;
 import com.techdevsolutions.springBoot.security.authorities.UserAuthority;
 import com.techdevsolutions.springBoot.security.principals.CustomUserDetails;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +32,17 @@ public class CustomAuthenticationManager implements AuthenticationProvider {
     public CustomAuthenticationManager(Environment environment) {
         this.environment = environment;
 
+        String userPassword = this.environment.getProperty("security.custom.user.password");
         CustomUserDetails user = new CustomUserDetails();
         user.setUsername("user");
-        user.setPassword("password");
+        user.setPassword(StringUtils.isNotEmpty(userPassword) ? userPassword : "password");
         user.setAuthorities(new ArrayList<>(Arrays.asList(new UserAuthority())));
         this.users.add(user);
 
+        String adminPassword = this.environment.getProperty("security.custom.admin.password");
         CustomUserDetails admin = new CustomUserDetails();
         admin.setUsername("admin");
-        admin.setPassword("password");
+        admin.setPassword(StringUtils.isNotEmpty(adminPassword) ? adminPassword : "password");
         admin.setAuthorities(new ArrayList<>(Arrays.asList(new UserAuthority(), new ApiAuthority(), new AdminAuthority())));
         this.users.add(admin);
     }

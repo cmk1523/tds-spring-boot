@@ -1,7 +1,10 @@
 package com.techdevsolutions.springBoot;
 
+import com.techdevsolutions.springBoot.security.CustomAuthenticationManager;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,13 +19,14 @@ import java.util.logging.Logger;
 @EnableWebSecurity
 public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
     private Logger logger = Logger.getLogger(SpringWebSecurityConfig.class.getName());
+    private Environment environment;
+    protected CustomAuthenticationManager customAuthenticationManager;
 
-//    protected CustomAuthenticationManager customAuthenticationManager;
-//
-//    @Autowired
-//    SpringWebSecurityConfig(CustomAuthenticationManager customAuthenticationManager) {
-//        this.customAuthenticationManager = customAuthenticationManager;
-//    }
+    @Autowired
+    SpringWebSecurityConfig(Environment environment, CustomAuthenticationManager customAuthenticationManager) {
+        this.environment = environment;
+        this.customAuthenticationManager = customAuthenticationManager;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -54,28 +58,23 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
     }
 
-    @Autowired
+    @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        PasswordEncoder encoder =
-                PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        String security = this.environment.getProperty("security.custom.system");
 
-        auth.inMemoryAuthentication()
-                .withUser("user")
-                .password(encoder.encode("password"))
-                .roles("USER")
-                .and()
-                .withUser("admin").
-                password(encoder.encode("admin"))
-                .roles("USER", "API", "ADMIN");
+        if (StringUtils.isNotEmpty(security) && security.equalsIgnoreCase("custom")) {
+            auth.authenticationProvider(this.customAuthenticationManager);
+        } else {
+            PasswordEncoder encoder =
+                    PasswordEncoderFactories.createDelegatingPasswordEncoder();
+            auth.inMemoryAuthentication()
+                    .withUser("user")
+                    .password(encoder.encode("password"))
+                    .roles("USER")
+                    .and()
+                    .withUser("admin").
+                    password(encoder.encode("admin"))
+                    .roles("USER", "API", "ADMIN");
+        }
     }
-
-//    @Override
-//    public void configure(AuthenticationManagerBuilder auth) {
-//        auth.authenticationProvider(this.customAuthenticationManager);
-//    }
-
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
 }
