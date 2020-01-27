@@ -39,6 +39,14 @@ public class AppController extends BaseController {
             map.put("buildNumber", environment.getProperty("application.buildNumber"));
             map.put("buildDateTime", environment.getProperty("application.buildDateTime"));
 
+            map.put("description", environment.getProperty("swagger.description"));
+            map.put("termsOfService", environment.getProperty("swagger.tos.url"));
+            map.put("contactName", environment.getProperty("swagger.contact.name"));
+            map.put("contactUrl", environment.getProperty("swagger.contact.url"));
+            map.put("contactEmail", environment.getProperty("swagger.contact.email"));
+            map.put("apiLicense", environment.getProperty("swagger.api.license"));
+            map.put("apiLicenseUrl", environment.getProperty("swagger.api.license.url"));
+
             Authentication authentication = (Authentication) request.getUserPrincipal();
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 

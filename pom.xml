@@ -112,9 +112,35 @@
                     <doCheck>false</doCheck>
                     <doUpdate>false</doUpdate>
                     <useLastCommittedRevision>true</useLastCommittedRevision>
-                    <shortRevisionLength>5</shortRevisionLength>
-                    <timestampFormat>{0,date,MM-dd-yyyy HH:mm}</timestampFormat>
+                    <!--<shortRevisionLength>5</shortRevisionLength>-->
+                    <timestampFormat>{0,date,MM-dd-yyyy HH:mm:ss Z}</timestampFormat>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>4.0.0</version>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <!--<configuration>-->
+                    <!--<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>-->
+                    <!--<prefix>git</prefix>-->
+                    <!--<verbose>false</verbose>-->
+                    <!--<generateGitPropertiesFile>true</generateGitPropertiesFile>-->
+                    <!--<generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>-->
+                    <!--<format>json</format>-->
+                    <!--<gitDescribe>-->
+                        <!--<skip>false</skip>-->
+                        <!--<always>false</always>-->
+                        <!--<dirty>-dirty</dirty>-->
+                    <!--</gitDescribe>-->
+                <!--</configuration>-->
             </plugin>
         </plugins>
     </build>
