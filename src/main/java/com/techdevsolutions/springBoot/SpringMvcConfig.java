@@ -31,11 +31,6 @@ public class SpringMvcConfig implements WebMvcConfigurer {
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
     }
 
-//    @Bean
-//    ControllerInterceptor controllerInterceptor() {
-//        return new ControllerInterceptor();
-//    }
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new ControllerInterceptor())
@@ -64,32 +59,4 @@ public class SpringMvcConfig implements WebMvcConfigurer {
                         .license(license)
                 );
     }
-
-//    @Bean
-//    public Docket api() {
-//        return new Docket(DocumentationType.SWAGGER_2)
-//                .select()
-//                .apis(RequestHandlerSelectors.basePackage("com.techdevsolutions.springBoot.controllers"))
-//                .paths(PathSelectors.ant("/api/v1/**"))
-//                .build()
-//                .pathMapping("/")
-//                .apiInfo(apiInfo());
-//
-//    }
-
-//    private ApiInfo apiInfo() {
-//        Contact contact = new Contact(this.environment.getProperty("swagger.contact.name"),
-//                this.environment.getProperty("swagger.contact.url"),
-//                this.environment.getProperty("swagger.contact.email"));
-//
-//        return new ApiInfo(
-//                this.environment.getProperty("swagger.title"),
-//                this.environment.getProperty("swagger.description"),
-//                this.environment.getProperty("application.version"),
-//                this.environment.getProperty("swagger.tos.url"),
-//                contact,
-//                this.environment.getProperty("swagger.api.license"),
-//                this.environment.getProperty("swagger.api.license.url"),
-//                Collections.emptyList());
-//    }
 }
