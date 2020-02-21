@@ -5,6 +5,7 @@ import com.techdevsolutions.springBoot.beans.Response;
 import com.techdevsolutions.springBoot.beans.ResponseList;
 import com.techdevsolutions.springBoot.beans.Search;
 import com.techdevsolutions.springBoot.beans.auditable.User;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.util.Optional;
 @RestController
 @EnableAutoConfiguration
 @RequestMapping("/api/v1/users")
+@Tag(name = "users", description = "User CRUD")
 public class UserController extends BaseController {
 
     @Autowired

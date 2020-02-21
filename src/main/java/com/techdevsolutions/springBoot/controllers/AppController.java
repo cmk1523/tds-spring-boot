@@ -1,6 +1,7 @@
 package com.techdevsolutions.springBoot.controllers;
 
 import com.techdevsolutions.springBoot.beans.Response;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.core.env.Environment;
@@ -20,6 +21,7 @@ import java.util.Map;
 @RestController
 @EnableAutoConfiguration
 @RequestMapping("/api/v1/app")
+@Tag(name = "app", description = "Application information")
 public class AppController extends BaseController {
     private Environment environment;
 

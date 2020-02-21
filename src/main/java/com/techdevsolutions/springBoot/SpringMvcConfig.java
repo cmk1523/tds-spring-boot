@@ -1,6 +1,11 @@
 package com.techdevsolutions.springBoot;
 
 import com.techdevsolutions.springBoot.controllers.ControllerInterceptor;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,19 +14,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-import java.util.Collections;
 
 @Configuration
-@EnableSwagger2
 public class SpringMvcConfig implements WebMvcConfigurer {
     private Environment environment;
 
@@ -49,30 +43,53 @@ public class SpringMvcConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("com.techdevsolutions.springBoot.controllers"))
-                .paths(PathSelectors.ant("/api/v1/**"))
-                .build()
-                .pathMapping("/")
-                .apiInfo(apiInfo());
+    public OpenAPI customOpenAPI() {
+        Contact contact = new Contact()
+            .name(this.environment.getProperty("swagger.contact.name"))
+            .url(this.environment.getProperty("swagger.contact.url"))
+            .email(this.environment.getProperty("swagger.contact.email"));
 
+        License license = new License()
+                .name(this.environment.getProperty("swagger.api.license"))
+                .url(this.environment.getProperty("swagger.api.license.url"));
+
+        return new OpenAPI()
+                .components(new Components())
+                .info(new Info()
+                        .title(this.environment.getProperty("swagger.title"))
+                        .description(this.environment.getProperty("swagger.description"))
+                        .version(this.environment.getProperty("application.version"))
+                        .termsOfService( this.environment.getProperty("swagger.tos.url"))
+                        .contact(contact)
+                        .license(license)
+                );
     }
 
-    private ApiInfo apiInfo() {
-        Contact contact = new Contact(this.environment.getProperty("swagger.contact.name"),
-                this.environment.getProperty("swagger.contact.url"),
-                this.environment.getProperty("swagger.contact.email"));
+//    @Bean
+//    public Docket api() {
+//        return new Docket(DocumentationType.SWAGGER_2)
+//                .select()
+//                .apis(RequestHandlerSelectors.basePackage("com.techdevsolutions.springBoot.controllers"))
+//                .paths(PathSelectors.ant("/api/v1/**"))
+//                .build()
+//                .pathMapping("/")
+//                .apiInfo(apiInfo());
+//
+//    }
 
-        return new ApiInfo(
-                this.environment.getProperty("swagger.title"),
-                this.environment.getProperty("swagger.description"),
-                this.environment.getProperty("application.version"),
-                this.environment.getProperty("swagger.tos.url"),
-                contact,
-                this.environment.getProperty("swagger.api.license"),
-                this.environment.getProperty("swagger.api.license.url"),
-                Collections.emptyList());
-    }
+//    private ApiInfo apiInfo() {
+//        Contact contact = new Contact(this.environment.getProperty("swagger.contact.name"),
+//                this.environment.getProperty("swagger.contact.url"),
+//                this.environment.getProperty("swagger.contact.email"));
+//
+//        return new ApiInfo(
+//                this.environment.getProperty("swagger.title"),
+//                this.environment.getProperty("swagger.description"),
+//                this.environment.getProperty("application.version"),
+//                this.environment.getProperty("swagger.tos.url"),
+//                contact,
+//                this.environment.getProperty("swagger.api.license"),
+//                this.environment.getProperty("swagger.api.license.url"),
+//                Collections.emptyList());
+//    }
 }
