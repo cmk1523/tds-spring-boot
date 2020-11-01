@@ -19,21 +19,45 @@ public class ControllerInterceptor extends HandlerInterceptorAdapter {
     }
 
     public static String GetRestURI(HttpServletRequest request) {
-        return request.getMethod() + " " + request.getRequestURI();
+        return request.getMethod() + " - " + request.getRequestURI();
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        this.logger.info(this.getRestURI(request));
-        Authentication authentication = (Authentication) request.getUserPrincipal();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        request.getSession().setAttribute("username", userDetails.getUsername());
+        String user = "?";
+
+        try {
+            Authentication authentication = (Authentication) request.getUserPrincipal();
+            user = ((UserDetails) authentication.getPrincipal()).getUsername();
+        } catch (Exception e) {
+            this.logger.severe(e.toString());
+        }
+
+        request.getSession().setAttribute("username", user);
         request.setAttribute("requestStartTime", new Date().getTime());
+        this.logger.info(user + " - " + this.getRestURI(request) + "...");
         return true;
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        long took = -1;
+        String user = "?";
 
+        try {
+            long requestStartTime = (long) request.getAttribute("requestStartTime");
+            took = new Date().getTime() - requestStartTime;
+        } catch (Exception e) {
+            this.logger.severe(e.toString());
+        }
+
+        try {
+            Authentication authentication = (Authentication) request.getUserPrincipal();
+            user = ((UserDetails) authentication.getPrincipal()).getUsername();
+        } catch (Exception e) {
+            this.logger.severe(e.toString());
+        }
+
+        this.logger.info(user + " - " + this.getRestURI(request) + "... [DONE] - took " + took + "ms");
     }
 }

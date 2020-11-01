@@ -1,9 +1,11 @@
 package com.techdevsolutions.springBoot.controllers;
 
+import com.techdevsolutions.common.beans.Filter;
 import com.techdevsolutions.common.beans.Search;
+import com.techdevsolutions.common.service.generic.GenericService;
 import com.techdevsolutions.springBoot.beans.Response;
 import com.techdevsolutions.springBoot.beans.ResponseList;
-import com.techdevsolutions.springBoot.beans.auditable.User;
+import com.techdevsolutions.springBoot.service.GenericServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -12,18 +14,20 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @EnableAutoConfiguration
-@RequestMapping("/api/v1/users")
-@Tag(name = "users", description = "User CRUD")
-public class UserController extends BaseController {
+@RequestMapping("/api/v1/generic")
+@Tag(name = "generic", description = "Generic CRUD")
+public class GenericController extends BaseController {
+    private GenericService genericService;
 
     @Autowired
-    public UserController() {
+    public GenericController(GenericServiceImpl genericService) {
+        this.genericService = genericService;
     }
 
     @ResponseBody
@@ -46,7 +50,7 @@ public class UserController extends BaseController {
             search.setFilters((filters.isPresent()) ? filters.get() : "");
             search.setFilterLogic((filterLogic.isPresent()) ? filterLogic.get() : Search.DEFAULT_FILTER_LOGIC);
 
-            List<User> list = new ArrayList<>(); // this.userService.search(search);
+            List<Map> list = this.genericService.search(search);
             return new ResponseList(list, this.getTimeTook(request));
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,15 +68,15 @@ public class UserController extends BaseController {
                          @RequestParam(value = "filters") Optional<String> filters,
                          @RequestParam(value = "filterLogic") Optional<String> filterLogic) {
         try {
-            Search filter = new Search();
-            filter.setSize((size.isPresent()) ? size.get() : Search.DEFAULT_SIZE);
-            filter.setPage((page.isPresent()) ? page.get() : Search.DEFAULT_PAGE);
-            filter.setSort((sort.isPresent()) ? sort.get() : Search.DEFAULT_SORT);
-            filter.setOrder((order.isPresent()) ? order.get() : Search.DEFAULT_ORDER);
-            filter.setFilters((filters.isPresent()) ? filters.get() : "");
-            filter.setFilterLogic((filterLogic.isPresent()) ? filterLogic.get() : Search.DEFAULT_FILTER_LOGIC);
+            Search search = new Search();
+            search.setSize((size.isPresent()) ? size.get() : Search.DEFAULT_SIZE);
+            search.setPage((page.isPresent()) ? page.get() : Search.DEFAULT_PAGE);
+            search.setSort((sort.isPresent()) ? sort.get() : Search.DEFAULT_SORT);
+            search.setOrder((order.isPresent()) ? order.get() : Search.DEFAULT_ORDER);
+            search.setFilters((filters.isPresent()) ? filters.get() : "");
+            search.setFilterLogic((filterLogic.isPresent()) ? filterLogic.get() : Search.DEFAULT_FILTER_LOGIC);
 
-            List<User> list = new ArrayList<>(); // this.userService.get(filter);
+            List<Map> list = this.genericService.search(search);
             return new ResponseList(list, this.getTimeTook(request));
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,15 +86,15 @@ public class UserController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public Object get(HttpServletRequest request, @PathVariable Integer id, HttpServletResponse response) {
+    public Object get(HttpServletRequest request, @PathVariable String id, HttpServletResponse response) {
         try {
-            User item = null; // this.userService.get(id);
+            Map item = this.genericService.get(id);
 
             if (item != null) {
                 return new Response(item, this.getTimeTook(request));
             } else {
                 return this.generateErrorResponse(request, HttpStatus.INTERNAL_SERVER_ERROR,
-                        "UserController - get - Item was not found using ID: " + id);
+                        "GenericController - get - Item was not found using ID: " + id);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,9 +104,9 @@ public class UserController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Object put(HttpServletRequest request, @RequestBody User data) {
+    public Object put(HttpServletRequest request, @RequestBody Map data) {
         try {
-            User newItem = null; // this.userService.create(data);
+            Map newItem = this.genericService.create(data);
             return new Response(newItem, this.getTimeTook(request));
         } catch (Exception e) {
             e.printStackTrace();
@@ -112,9 +116,9 @@ public class UserController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public Object update(HttpServletRequest request, @PathVariable Integer id, @RequestBody User data) {
+    public Object update(HttpServletRequest request, @PathVariable String id, @RequestBody Map data) {
         try {
-            User updatedItem = null; // this.userService.createupdate(data);
+            Map updatedItem = this.genericService.update(data);
 
             if (updatedItem != null) {
                 return new Response(updatedItem, this.getTimeTook(request));
@@ -129,13 +133,14 @@ public class UserController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    public Object delete(HttpServletRequest request, @PathVariable Integer id, @RequestParam(value = "false") Optional<String> delete) {
+    public Object delete(HttpServletRequest request, @PathVariable String id,
+                         @RequestParam(value = "false") Optional<String> delete) {
         try {
-//            if (delete != null && delete.isPresent()) {
-//                this.userService.delete(id);
-//            } else {
-//                this.userService.remove(id);
-//            }
+            if (delete != null && delete.isPresent()) {
+                this.genericService.delete(id);
+            } else {
+                this.genericService.remove(id);
+            }
 
             return new Response(null, this.getTimeTook(request));
         } catch (Exception e) {
