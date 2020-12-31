@@ -27,6 +27,10 @@ logging.level.com.techdevsolutions: debug
 #spring.datasource.password: abcABC123!@#
 #spring.datasource.driver-class-name: com.mysql.jdbc.Driver
 
-#elasticsearch.host: localhost
-#elasticsearch.username: elastic
-#elasticsearch.password: O15IYlLhFF3ok17QPEhi
+elasticsearch.host: ${ELASTICSEARCH_HOST:localhost}
+elasticsearch.port: 9200
+elasticsearch.protocol: https
+elasticsearch.username: ${ELASTICSEARCH_USERNAME:elastic}
+elasticsearch.password: ${ELASTICSEARCH_PASSWORD:iq3KFXPsMm4OlaWnB9am}
+elasticsearch.certificatePath: ${ELASTICSEARCH_CERTPATH:C:\Users\Chris\Dropbox\Github\tds\tds-docker-elasticsearch\certs\elasticsearch-01\elasticsearch-01.crt}
+

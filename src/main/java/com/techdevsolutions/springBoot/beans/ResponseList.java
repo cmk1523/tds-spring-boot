@@ -8,7 +8,11 @@ public class ResponseList extends Response implements Serializable {
 
     public ResponseList(List data, Long took) {
         this.setData(data);
-        this.setSize(data.size());
+
+        if (data != null) {
+            this.setSize(data.size());
+        }
+
         this.setTook(took);
     }
 

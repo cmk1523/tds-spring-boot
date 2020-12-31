@@ -42,39 +42,13 @@ public class GenericController extends BaseController {
                         @RequestParam(value = "filterLogic") Optional<String> filterLogic) {
         try {
             Search search = new Search();
-            search.setTerm((term.isPresent()) ? term.get() : "");
-            search.setSize((size.isPresent()) ? size.get() : Search.DEFAULT_SIZE);
-            search.setPage((page.isPresent()) ? page.get() : Search.DEFAULT_PAGE);
-            search.setSort((sort.isPresent()) ? sort.get() : Search.DEFAULT_SORT);
-            search.setOrder((order.isPresent()) ? order.get() : Search.DEFAULT_ORDER);
-            search.setFilters((filters.isPresent()) ? filters.get() : "");
-            search.setFilterLogic((filterLogic.isPresent()) ? filterLogic.get() : Search.DEFAULT_FILTER_LOGIC);
-
-            List<Map> list = this.genericService.search(search);
-            return new ResponseList(list, this.getTimeTook(request));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return this.generateErrorResponse(request, HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
-        }
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public Object getAll(HttpServletRequest request,
-                         @RequestParam(value = "size") Optional<Integer> size,
-                         @RequestParam(value = "page") Optional<Integer> page,
-                         @RequestParam(value = "sort") Optional<String> sort,
-                         @RequestParam(value = "order") Optional<String> order,
-                         @RequestParam(value = "filters") Optional<String> filters,
-                         @RequestParam(value = "filterLogic") Optional<String> filterLogic) {
-        try {
-            Search search = new Search();
-            search.setSize((size.isPresent()) ? size.get() : Search.DEFAULT_SIZE);
-            search.setPage((page.isPresent()) ? page.get() : Search.DEFAULT_PAGE);
-            search.setSort((sort.isPresent()) ? sort.get() : Search.DEFAULT_SORT);
-            search.setOrder((order.isPresent()) ? order.get() : Search.DEFAULT_ORDER);
-            search.setFilters((filters.isPresent()) ? filters.get() : "");
-            search.setFilterLogic((filterLogic.isPresent()) ? filterLogic.get() : Search.DEFAULT_FILTER_LOGIC);
+            search.setTerm(term.orElse(""));
+            search.setSize(size.orElse(Search.DEFAULT_SIZE));
+            search.setPage(page.orElse(Search.DEFAULT_PAGE));
+            search.setSort(sort.orElse("@timestamp"));
+            search.setOrder(order.orElse(Search.DEFAULT_ORDER));
+            search.setFilters(filters.orElse(""));
+            search.setFilterLogic(filterLogic.orElse(Search.DEFAULT_FILTER_LOGIC));
 
             List<Map> list = this.genericService.search(search);
             return new ResponseList(list, this.getTimeTook(request));
@@ -108,6 +82,18 @@ public class GenericController extends BaseController {
         try {
             Map newItem = this.genericService.create(data);
             return new Response(newItem, this.getTimeTook(request));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return this.generateErrorResponse(request, HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "install", method = RequestMethod.POST)
+    public Object install(HttpServletRequest request) {
+        try {
+           this.genericService.install();
+            return new Response(null, this.getTimeTook(request));
         } catch (Exception e) {
             e.printStackTrace();
             return this.generateErrorResponse(request, HttpStatus.INTERNAL_SERVER_ERROR, e.toString());

@@ -65,12 +65,12 @@ public class UserController extends BaseController {
                          @RequestParam(value = "filterLogic") Optional<String> filterLogic) {
         try {
             Search filter = new Search();
-            filter.setSize((size.isPresent()) ? size.get() : Search.DEFAULT_SIZE);
-            filter.setPage((page.isPresent()) ? page.get() : Search.DEFAULT_PAGE);
-            filter.setSort((sort.isPresent()) ? sort.get() : Search.DEFAULT_SORT);
-            filter.setOrder((order.isPresent()) ? order.get() : Search.DEFAULT_ORDER);
-            filter.setFilters((filters.isPresent()) ? filters.get() : "");
-            filter.setFilterLogic((filterLogic.isPresent()) ? filterLogic.get() : Search.DEFAULT_FILTER_LOGIC);
+            filter.setSize(size.orElse(Search.DEFAULT_SIZE));
+            filter.setPage(page.orElse(Search.DEFAULT_PAGE));
+            filter.setSort(sort.orElse(Search.DEFAULT_SORT));
+            filter.setOrder(order.orElse(Search.DEFAULT_ORDER));
+            filter.setFilters(filters.orElse(""));
+            filter.setFilterLogic(filterLogic.orElse(Search.DEFAULT_FILTER_LOGIC));
 
             List<User> list = new ArrayList<>(); // this.userService.get(filter);
             return new ResponseList(list, this.getTimeTook(request));
