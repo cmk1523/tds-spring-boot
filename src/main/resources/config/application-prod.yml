@@ -1,4 +1,0 @@
-application.environment: prod
-
-logging.level.ROOT: warn
-logging.level.com.techdevsolutions: warn

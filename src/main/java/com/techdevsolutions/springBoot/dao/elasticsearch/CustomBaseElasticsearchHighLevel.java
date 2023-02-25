@@ -1,6 +1,5 @@
-package com.techdevsolutions.springBoot.dao;
+package com.techdevsolutions.springBoot.dao.elasticsearch;
 
-import com.techdevsolutions.common.dao.elasticsearch.BaseElasticsearchHighLevel;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -35,7 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CustomBaseElasticsearchHighLevel extends BaseElasticsearchHighLevel {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger LOG = LoggerFactory.getLogger(this.getClass());
     private String certificatePath = "";
     private String ES_HOST = "localhost";
     private String ES_PROTOCOL = "http";
@@ -87,8 +86,9 @@ public class CustomBaseElasticsearchHighLevel extends BaseElasticsearchHighLevel
             } else {
                 throw new Exception("Error: Unable to get client");
             }
-        } catch (ElasticsearchException var5) {
-            throw new Exception("Error: " + var5.getDetailedMessage());
+        } catch (ElasticsearchException e) {
+            LOG.error("Unable to get documents");
+            throw new Exception(e);
         }
     }
 
@@ -136,7 +136,8 @@ public class CustomBaseElasticsearchHighLevel extends BaseElasticsearchHighLevel
                         });
                 this.client = new RestHighLevelClient(restClientBuilder);
             } catch (Exception e) {
-                logger.error("Unable to start a secure Elasticsearch High Level Client: " + e.toString());
+                LOG.error("Unable to start a secure Elasticsearch High Level Client");
+                e.printStackTrace();
             }
         }
 

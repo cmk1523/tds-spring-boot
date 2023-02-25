@@ -2,7 +2,7 @@ package com.techdevsolutions.springBoot.beans;
 
 import java.io.Serializable;
 
-public class Response implements Serializable {
+public class Response {
     private Object data = null;
     private Long took = 0L;
     private String error = "";

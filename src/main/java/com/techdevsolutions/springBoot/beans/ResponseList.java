@@ -3,7 +3,7 @@ package com.techdevsolutions.springBoot.beans;
 import java.io.Serializable;
 import java.util.List;
 
-public class ResponseList extends Response implements Serializable {
+public class ResponseList extends Response {
     private Integer size = 0;
 
     public ResponseList(List data, Long took) {

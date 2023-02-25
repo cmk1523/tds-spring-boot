@@ -3,7 +3,7 @@ package com.techdevsolutions.springBoot.beans;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class ErrorResponse implements Serializable {
+public class ErrorResponse {
     private String path = "";
     private String status = "";
     private String error = "";
@@ -49,32 +49,5 @@ public class ErrorResponse implements Serializable {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ErrorResponse that = (ErrorResponse) o;
-        return Objects.equals(path, that.path) &&
-                Objects.equals(status, that.status) &&
-                Objects.equals(error, that.error) &&
-                Objects.equals(message, that.message);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(path, status, error, message);
-    }
-
-    @Override
-    public String toString() {
-        return "ErrorResponse{" +
-                "path='" + path + '\'' +
-                ", status='" + status + '\'' +
-                ", error='" + error + '\'' +
-                ", message='" + message + '\'' +
-                '}';
     }
 }

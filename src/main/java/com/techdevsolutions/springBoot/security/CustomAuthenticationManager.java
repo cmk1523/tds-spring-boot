@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @Component
 public class CustomAuthenticationManager implements AuthenticationProvider {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     private Environment environment;
     private List<CustomUserDetails> users = new ArrayList<>();
@@ -58,16 +58,16 @@ public class CustomAuthenticationManager implements AuthenticationProvider {
                     .findFirst();
 
             if (found.isPresent()) {
-                this.logger.info("Authenticating: " + username + "... [SUCCESS]");
+                LOG.info("Authenticated: {}", found.get().getUsername());
                 CustomUserDetails user = found.get();
                 return new UsernamePasswordAuthenticationToken(user, password, user.getAuthorities());
             } else {
-                this.logger.warn("Authenticating: " + username + "... [FAILED]");
+                LOG.warn("Failed to authenticate: {}", found.get().getUsername());
                 return null;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            throw new BadCredentialsException("Authentication exception for: " + username + ". Exception: " + e.toString());
+            throw new BadCredentialsException("Authentication exception for: " + username);
         }
     }
 

@@ -1,10 +1,9 @@
-package com.techdevsolutions.springBoot.dao;
+package com.techdevsolutions.springBoot.dao.elasticsearch;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.techdevsolutions.common.beans.elasticsearchCommonSchema.Event;
-import com.techdevsolutions.common.service.core.DateUtils;
+import com.techdevsolutions.springBoot.utils.DateUtils;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -24,7 +23,7 @@ public class GenericElasticsearchRowMapper {
     }
 
     public Map fromJson(String json, String id) throws IOException {
-        SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.ISO_STRING);
+        SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.ISO_UTC_STRING);
         sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         Map<String, Object> map = this.objectMapper.readValue(json, Map.class);
