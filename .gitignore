@@ -42,3 +42,6 @@ testem.log
 .DS_Store
 Thumbs.db
 *.iml
+
+# custom
+/src/main/resources/config/application-local.yml

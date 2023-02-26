@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.*;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchModule;
@@ -37,57 +36,57 @@ public class ElasticsearchGenericDaoImpl { // implements DaoCrudInterface<Map> {
     private ObjectMapper objectMapper = new ObjectMapper();
     public final GenericElasticsearchRowMapper rowMapper = new GenericElasticsearchRowMapper();
 
-    @Autowired
-    public ElasticsearchGenericDaoImpl(Environment environment) {
-        this.dao = new CustomBaseElasticsearchHighLevel("localhost");
-
-        if (environment != null) {
-            String host = environment.getProperty("elasticsearch.host");
-
-            if (StringUtils.isNotEmpty(host)) {
-                this.ES_HOST = host;
-                this.LOG.debug("Setting ES_HOST: " + this.ES_HOST);
-            }
-
-            String port = environment.getProperty("elasticsearch.port");
-
-            if (StringUtils.isNotEmpty(host)) {
-                this.ES_PORT = Integer.valueOf(port);
-                this.LOG.debug("Setting ES_PORT: " + this.ES_PORT);
-            }
-
-            String protocol = environment.getProperty("elasticsearch.protocol");
-
-            if (StringUtils.isNotEmpty(protocol)) {
-                this.ES_PROTOCOL = protocol;
-                this.LOG.debug("Setting ES_PROTOCOL: " + this.ES_PROTOCOL);
-            }
-
-            String username = environment.getProperty("elasticsearch.username");
-
-            if (StringUtils.isNotEmpty(username)) {
-                this.ES_USERNAME = username;
-                this.LOG.debug("Setting ES_USERNAME: " + this.ES_USERNAME);
-            }
-
-            String password = environment.getProperty("elasticsearch.password");
-
-            if (StringUtils.isNotEmpty(password)) {
-                this.ES_PASSWORD = password;
-                this.LOG.debug("Setting ES_PASSWORD: REDACTED");
-            }
-
-            String certificatePath = environment.getProperty("elasticsearch.certificatePath");
-
-            if (StringUtils.isNotEmpty(certificatePath)) {
-                this.ES_CERT_PATH = certificatePath;
-                this.LOG.debug("Setting ES_CERT_PATH: " + this.ES_CERT_PATH);
-            }
-
-            this.dao.getClient(this.ES_HOST, this.ES_PORT, this.ES_PROTOCOL, this.ES_CERT_PATH,
-                    this.ES_USERNAME, this.ES_PASSWORD);
-        }
-    }
+//    @Autowired
+//    public ElasticsearchGenericDaoImpl(Environment environment) {
+//        this.dao = new CustomBaseElasticsearchHighLevel("localhost");
+//
+//        if (environment != null) {
+//            String host = environment.getProperty("elasticsearch.host");
+//
+//            if (StringUtils.isNotEmpty(host)) {
+//                this.ES_HOST = host;
+//                this.LOG.debug("Setting ES_HOST: " + this.ES_HOST);
+//            }
+//
+//            String port = environment.getProperty("elasticsearch.port");
+//
+//            if (StringUtils.isNotEmpty(host)) {
+//                this.ES_PORT = Integer.valueOf(port);
+//                this.LOG.debug("Setting ES_PORT: " + this.ES_PORT);
+//            }
+//
+//            String protocol = environment.getProperty("elasticsearch.protocol");
+//
+//            if (StringUtils.isNotEmpty(protocol)) {
+//                this.ES_PROTOCOL = protocol;
+//                this.LOG.debug("Setting ES_PROTOCOL: " + this.ES_PROTOCOL);
+//            }
+//
+//            String username = environment.getProperty("elasticsearch.username");
+//
+//            if (StringUtils.isNotEmpty(username)) {
+//                this.ES_USERNAME = username;
+//                this.LOG.debug("Setting ES_USERNAME: " + this.ES_USERNAME);
+//            }
+//
+//            String password = environment.getProperty("elasticsearch.password");
+//
+//            if (StringUtils.isNotEmpty(password)) {
+//                this.ES_PASSWORD = password;
+//                this.LOG.debug("Setting ES_PASSWORD: REDACTED");
+//            }
+//
+//            String certificatePath = environment.getProperty("elasticsearch.certificatePath");
+//
+//            if (StringUtils.isNotEmpty(certificatePath)) {
+//                this.ES_CERT_PATH = certificatePath;
+//                this.LOG.debug("Setting ES_CERT_PATH: " + this.ES_CERT_PATH);
+//            }
+//
+//            this.dao.getClient(this.ES_HOST, this.ES_PORT, this.ES_PROTOCOL, this.ES_CERT_PATH,
+//                    this.ES_USERNAME, this.ES_PASSWORD);
+//        }
+//    }
 
 //    @Override
 //    public List<Map> search(Search search) throws Exception {
