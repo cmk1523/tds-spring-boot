@@ -10,6 +10,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -25,64 +26,49 @@ import java.util.Collections;
 public class SecurityConfiguration  {
     private Logger LOG = LoggerFactory.getLogger(this.getClass());
     private final Environment environment;
-    protected final CustomAuthenticationManager customAuthenticationManager;
+//    protected final CustomAuthenticationManager customAuthenticationManager;
 
     @Autowired
-    SecurityConfiguration(final Environment environment,
-                          final CustomAuthenticationManager customAuthenticationManager) {
+    SecurityConfiguration(final Environment environment) {
         this.environment = environment;
-        this.customAuthenticationManager = customAuthenticationManager;
+//        this.customAuthenticationManager = customAuthenticationManager;
     }
 
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers(
-//                        "/*",
-                        "/assets/**"
-                )
-                .permitAll()
-                .antMatchers("/api/v1/app/**")
-                .hasRole("USER")
-                .antMatchers("/api/v1/**")
-                .hasRole("API")
-                .anyRequest()
-                .authenticated()
+                .csrf()
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and()
-                .httpBasic()
+                    .authorizeRequests()
+                        .antMatchers(
+                                "/login",
+                                "/assets/**",
+                                "/api/v1/app"
+                        )
+                        .permitAll()
+                        .antMatchers("/api/v1/**")
+                        .   hasRole("API")
+                        .anyRequest()
+                        .authenticated()
                 .and()
-                .formLogin()
-                .loginPage("/login")
-                .permitAll()
+                    .httpBasic()
                 .and()
-                .logout()
-                .deleteCookies("JSESSIONID")
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login")
-                .permitAll();
+                    .formLogin()
+                    .loginPage("/login")
+                    .permitAll()
+                .and()
+                    .oauth2Login()
+                    .loginPage("/")
+                .and()
+                    .logout()
+                    .deleteCookies("JSESSIONID")
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                    .logoutSuccessUrl("/")
+                    .permitAll();
 
         return http.build();
     }
-
-//    @Bean
-//    public InMemoryUserDetailsManager userDetailsService() {
-////        String security = this.environment.getProperty("security.custom.system");
-////
-////        if (StringUtils.isNotEmpty(security) && security.equalsIgnoreCase("custom")) {
-////            auth.authenticationProvider(this.customAuthenticationManager);
-////        } else {
-//            PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//
-//            UserDetails user = User.withDefaultPasswordEncoder()
-//                    .username("user")
-//                    .password(encoder.encode("password"))
-//                    .roles("USER")
-//                    .build();
-//            return new InMemoryUserDetailsManager(user);
-////        }
-//    }
 
     private ApiInfo apiInfo() {
         return new ApiInfo(environment.getProperty("application.title"),
@@ -109,48 +95,4 @@ public class SecurityConfiguration  {
                 .build();
     }
 
-
-//    @Bean
-//    public OpenAPI customOpenAPI() {
-//        Contact contact = new Contact()
-//            .name(this.environment.getProperty("swagger.contact.name"))
-//            .url(this.environment.getProperty("swagger.contact.url"))
-//            .email(this.environment.getProperty("swagger.contact.email"));
-//
-//        License license = new License()
-//                .name(this.environment.getProperty("swagger.api.license"))
-//                .url(this.environment.getProperty("swagger.api.license.url"));
-//
-//        return new OpenAPI()
-//                .components(new Components())
-//                .info(new Info()
-//                        .title(this.environment.getProperty("swagger.title"))
-//                        .description(this.environment.getProperty("swagger.description"))
-//                        .version(this.environment.getProperty("application.version"))
-//                        .termsOfService( this.environment.getProperty("swagger.tos.url"))
-//                        .contact(contact)
-//                        .license(license)
-//                );
-//    }
-
-
-//    @Override
-//    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        String security = this.environment.getProperty("security.custom.system");
-//
-//        if (StringUtils.isNotEmpty(security) && security.equalsIgnoreCase("custom")) {
-//            auth.authenticationProvider(this.customAuthenticationManager);
-//        } else {
-//            PasswordEncoder encoder =
-//                    PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//            auth.inMemoryAuthentication()
-//                    .withUser("user")
-//                    .password(encoder.encode("password"))
-//                    .roles("USER")
-//                    .and()
-//                    .withUser("admin").
-//                    password(encoder.encode("admin"))
-//                    .roles("USER", "API", "ADMIN");
-//        }
-//    }
 }

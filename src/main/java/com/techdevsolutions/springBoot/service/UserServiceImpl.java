@@ -2,7 +2,6 @@ package com.techdevsolutions.springBoot.service;
 
 import com.techdevsolutions.springBoot.beans.Search;
 import com.techdevsolutions.springBoot.beans.auditable.User;
-import com.techdevsolutions.springBoot.dao.memory.InMemoryGenericDaoImpl;
 import com.techdevsolutions.springBoot.dao.memory.InMemoryUserDaoImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -34,6 +34,16 @@ spring:
       org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration, \
       org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration, \
       org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: 9bcb218a568485fe9c8f
+            clientSecret: github-client-secret
+          google:
+            client-id: 102759987023-b2eva6c5ge5e4caoh73fhbka7fdvv0ki.apps.googleusercontent.com
+            client-secret: google-client-secret
 
 security:
   custom:

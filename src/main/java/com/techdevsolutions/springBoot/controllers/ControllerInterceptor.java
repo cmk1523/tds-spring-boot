@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -17,19 +18,18 @@ import java.util.Date;
 public class ControllerInterceptor implements HandlerInterceptor {
     private Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-    public String getRestURI(HttpServletRequest request) {
-        return ControllerInterceptor.GetRestURI(request);
-    }
-
-    public static String GetRestURI(HttpServletRequest request) {
-        return request.getMethod() + " " + request.getRequestURI();
-    }
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String user = SecurityContextHolder.getContext().getAuthentication().getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String user = authentication.getName();
+
+        try {
+            DefaultOAuth2User principal = (DefaultOAuth2User) authentication.getPrincipal();
+            user = principal.getAttribute("name");
+        } catch (Exception ignored) {}
+
         request.setAttribute("requestStartTime", new Date().getTime());
-        LOG.info(this.getRestURI(request) + " " + user);
+        LOG.info(request.getMethod() + " " + request.getRequestURI() + " " + user);
         return true;
     }
 
