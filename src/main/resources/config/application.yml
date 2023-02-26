@@ -49,9 +49,13 @@ security:
   custom:
     system: custom
     admin:
+      id: 0,
       password: password
+      email: user@gmail.com
     user:
+      id: 1,
       password: password
+      email: admin@gmail.com
 
 logging:
   level:

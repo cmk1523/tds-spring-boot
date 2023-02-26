@@ -8,13 +8,37 @@ import java.util.Collection;
 import java.util.List;
 
 public class CustomUserDetails implements UserDetails {
+    private String id = "";
+
     private String username = "";
+
     private String password = "";
+
+    private String email = "";
+
     private List<? extends GrantedAuthority> authorities = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public CustomUserDetails setId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public CustomUserDetails setEmail(String email) {
+        this.email = email;
+        return this;
     }
 
     public void setAuthorities(List<? extends GrantedAuthority> authorities) {

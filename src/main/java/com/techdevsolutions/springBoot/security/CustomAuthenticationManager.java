@@ -32,16 +32,27 @@ public class CustomAuthenticationManager implements AuthenticationProvider {
     public CustomAuthenticationManager(Environment environment) {
         this.environment = environment;
 
+        String userId = this.environment.getProperty("security.custom.user.id");
+        String userEmail = this.environment.getProperty("security.custom.user.email");
         String userPassword = this.environment.getProperty("security.custom.user.password");
+
         CustomUserDetails user = new CustomUserDetails();
+        user.setId(StringUtils.isNotEmpty(userId) ? userId : "1");
         user.setUsername("user");
+        user.setEmail(StringUtils.isNotEmpty(userEmail) ? userEmail : "");
         user.setPassword(StringUtils.isNotEmpty(userPassword) ? userPassword : "password");
         user.setAuthorities(new ArrayList<>(Arrays.asList(new UserAuthority())));
         this.users.add(user);
 
+
+        String adminId = this.environment.getProperty("security.custom.admin.id");
+        String adminEmail = this.environment.getProperty("security.custom.admin.email");
         String adminPassword = this.environment.getProperty("security.custom.admin.password");
+
         CustomUserDetails admin = new CustomUserDetails();
+        admin.setId(StringUtils.isNotEmpty(adminId) ? adminId : "0");
         admin.setUsername("admin");
+        user.setEmail(StringUtils.isNotEmpty(adminEmail) ? adminEmail : "");
         admin.setPassword(StringUtils.isNotEmpty(adminPassword) ? adminPassword : "password");
         admin.setAuthorities(new ArrayList<>(Arrays.asList(new UserAuthority(), new ApiAuthority(), new AdminAuthority())));
         this.users.add(admin);
