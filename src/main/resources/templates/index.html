@@ -259,7 +259,7 @@
 <body>
 
 <div class="container unauthenticated">
-    <form class="form-signin" th:action="@{/login}" method="post">
+    <form class="form-signin" th:action="@{/index}" method="post">
         <h1 style="text-align: center">TDS Spring Boot</h1>
 
         <h2 class="form-signin-heading">Login</h2>
@@ -304,6 +304,15 @@
                 Login with Google
             </div>
         </a>
+        <!-- You need to pay for an apple dev account
+        <a href="/oauth2/authorization/apple">
+            <div class="form-group"
+                 style="background-color: #ffffff; color: #000000; text-align: center; padding: 5px; border: 1px solid #000000;">
+                <img src="/assets/apple.png" style="width: 32px;">
+                Login with Google
+            </div>
+        </a>
+        -->
     </form>
 </div>
 <div class="container authenticated" style="display:none">
