@@ -26,46 +26,44 @@ import java.util.Collections;
 public class SecurityConfiguration  {
     private Logger LOG = LoggerFactory.getLogger(this.getClass());
     private final Environment environment;
-//    protected final CustomAuthenticationManager customAuthenticationManager;
 
     @Autowired
     SecurityConfiguration(final Environment environment) {
         this.environment = environment;
-//        this.customAuthenticationManager = customAuthenticationManager;
     }
 
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
         http
-                .csrf()
-                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
-                    .authorizeRequests()
-                        .antMatchers(
-                                "/login",
-                                "/assets/**",
-                                "/api/v1/app"
-                        )
-                        .permitAll()
-                        .antMatchers("/api/v1/**")
-                        .   hasRole("API")
-                        .anyRequest()
-                        .authenticated()
-                .and()
-                    .httpBasic()
-                .and()
-                    .formLogin()
-                    .loginPage("/index")
+            .csrf()
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            .and()
+                .authorizeRequests()
+                    .antMatchers(
+                        "/login",
+                        "/assets/**",
+                        "/api/v1/app"
+                    )
                     .permitAll()
-                .and()
-                    .oauth2Login()
-                    .loginPage("/index")
-                .and()
-                    .logout()
-                    .deleteCookies("JSESSIONID")
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                    .logoutSuccessUrl("/")
-                    .permitAll();
+                    .antMatchers("/api/v1/**")
+                    .   hasRole("API")
+                    .anyRequest()
+                    .authenticated()
+            .and()
+                .httpBasic()
+            .and()
+                .formLogin()
+                .loginPage("/index")
+                .permitAll()
+            .and()
+                .oauth2Login()
+                .loginPage("/index")
+            .and()
+                .logout()
+                .deleteCookies("JSESSIONID")
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/")
+                .permitAll();
 
         return http.build();
     }

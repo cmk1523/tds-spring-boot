@@ -57,57 +57,45 @@ public class AppController extends BaseController {
         map.put("contactName", environment.getProperty("swagger.contact.name"));
         map.put("contactUrl", environment.getProperty("swagger.contact.url"));
         map.put("contactEmail", environment.getProperty("swagger.contact.email"));
-        map.put("apiLicense", environment.getProperty("swagger.api.license"));
         map.put("apiLicenseUrl", environment.getProperty("swagger.api.license.url"));
 
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (authentication == null || authentication.getPrincipal() == null || authentication.getPrincipal().equals("anonymousUser")) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response(null));
+                map.put("user", null);
+            } else {
+
+                Map<String, Object> principalMap = (Map<String, Object>) this.objectMapper.convertValue(authentication.getPrincipal(), Map.class);
+
+                Map<String, Object> attributes = principalMap.get("attributes") != null
+                        ? (Map<String, Object>) principalMap.get("attributes") // github & google
+                        : principalMap; // local
+
+                Map<String, Object> returnMap = new HashMap<>();
+                returnMap.put("id", attributes.get("id") != null
+                        ? attributes.get("id") // github and local
+                        : attributes.get("sub")); // google
+                returnMap.put("login", attributes.get("login") != null
+                        ? attributes.get("login") // github
+                        : attributes.get("email") != null
+                        ? attributes.get("email") // google
+                        : attributes.get("username")); // local
+                returnMap.put("name", attributes.get("name") != null
+                        ? attributes.get("name") // github & google
+                        : attributes.get("username")); // local
+                returnMap.put("avatar", attributes.get("avatar_url") != null
+                        ? attributes.get("avatar_url") // github
+                        : attributes.get("picture")); // google
+                returnMap.put("authorities", attributes.get("authorities"));
+
+                map.put("user", returnMap);
             }
-
-            Map<String, Object> principalMap = (Map<String, Object>) this.objectMapper.convertValue(authentication.getPrincipal(), Map.class);
-
-            Map<String, Object> attributes = principalMap.get("attributes") != null
-                    ? (Map<String, Object>) principalMap.get("attributes") // github & google
-                    : principalMap; // local
-
-            Map<String, Object> returnMap = new HashMap<>();
-            returnMap.put("id", attributes.get("id") != null
-                    ? attributes.get("id") // github and local
-                    : attributes.get("sub")); // google
-            returnMap.put("login", attributes.get("login") != null
-                    ? attributes.get("login") // github
-                    : attributes.get("email") != null
-                    ? attributes.get("email") // google
-                    : attributes.get("username")); // local
-            returnMap.put("name", attributes.get("name") != null
-                ? attributes.get("name") // github & google
-                : attributes.get("username")); // local
-            returnMap.put("avatar", attributes.get("avatar_url") != null
-                ? attributes.get("avatar_url") // github
-                : attributes.get("picture")); // google
-            returnMap.put("authorities", attributes.get("authorities"));
-
-            map.put("user", returnMap);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response(null));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response(null));
         }
 
         return new Response(map, this.getTimeTook(request));
     }
-
-//    @RequestMapping(value = "user", method = RequestMethod.GET)
-//    public Object user(final HttpServletRequest request,
-//                         final @AuthenticationPrincipal OAuth2User principal) throws Exception {
-//        if (principal != null) {
-//            Map user = Collections.singletonMap("name", principal.getAttribute("name"));
-//            return new Response(user, this.getTimeTook(request));
-//        } else {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response(null));
-//        }
-//
-//    }
 }

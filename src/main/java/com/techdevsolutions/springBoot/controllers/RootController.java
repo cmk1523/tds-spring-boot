@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/")
 public class RootController {
     @RequestMapping(method = RequestMethod.GET)
-    public String swaggerUi() {
+    public String rootController() {
         return "index";
     }
 }
